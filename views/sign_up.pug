@@ -1,9 +1,17 @@
 extends layout
 
 block content
-  h1 Login
+  h1 Sign Up!
+  if exists 
+    p That username is taken please use a different one
 
   form(method='POST' action='')
+    div.form-group
+      label(for='firstName') First Name:
+      input#firstName.form-control(type='text', placeholder='John' name='firstName' required='true')
+    div.form-group
+      label(for='lastName') Last Name:
+      input#lastName.form-control(type='text', placeholder='Adams' name='lastName' required='true')
     div.form-group
       label(for='username') Username:
       input#username.form-control(type='text',  name='username' required='true' minlength='3')
@@ -11,9 +19,6 @@ block content
       label(for='password') Password:
       input#password.form-control(type='password', name='password' required='true' minlength='7')        
     button.btn.btn-primary(type='submit') Submit
-
-  p no account? 
-    a(href='/sign-up') Sign Up  
 
   if errors
    ul
