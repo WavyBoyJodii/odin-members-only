@@ -9,7 +9,7 @@ const asyncHandler = require('express-async-handler');
 
 /* GET home/login page. */
 router.get('/', function (req, res, next) {
-  res.render('index');
+  res.render('index', { message: req.flash('error') });
 });
 
 // Handle post login page
@@ -18,6 +18,7 @@ router.post(
   passport.authenticate('local', {
     successRedirect: '/secret-entrance',
     failureRedirect: '/',
+    failureFlash: true, // Enable flash messages for authentication failures
   })
 );
 
