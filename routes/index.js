@@ -82,6 +82,9 @@ router.post(
 
 // Get secret Entrance page
 router.get('/secret-entrance', function (req, res, next) {
+  if (!req.user) {
+    res.redirect('/');
+  }
   if (req.user.membership === true) {
     res.redirect('/message-board');
     return;
@@ -118,5 +121,61 @@ router.post(
     }
   })
 );
+
+// Get message board page
+router.get(
+  '/message-board',
+  asyncHandler(async function (req, res, next) {
+    // if no user redirect to login page
+    if (!req.user) {
+      res.redirect('/');
+      return;
+    }
+    // find all messages to display on message board
+    const allMessages = await Message.find({})
+      .sort({ timestamp: -1 })
+      .populate('user')
+      .exec();
+    res.render('message_board', { messages: allMessages });
+  })
+);
+
+// Handle message board create message on POST
+router.post(
+  '/message-board',
+  [
+    // validate and sanitize the fields
+    body('title', 'field cant be empty').trim().isLength({ min: 1 }).escape(),
+    body('text', 'field cant be empty').trim().isLength({ min: 1 }).escape(),
+    body('userid').trim().escape(),
+  ],
+  asyncHandler(async (req, res, next) => {
+    //Extract the validation errors from a request
+    const errors = validationResult(req);
+    // if errors re render page with errors shown??
+    if (!errors.isEmpty()) {
+      res.render('message_board', { errors: errors.array() });
+      return;
+    }
+    // Create new message and save it then redirect to message board page
+    const message = new Message({
+      title: req.body.title,
+      text: req.body.text,
+      user: req.body.userid,
+    });
+    await message.save();
+    res.redirect('/message-board');
+  })
+);
+
+// Handle Log Out
+router.get('/log-out', (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
+});
 
 module.exports = router;

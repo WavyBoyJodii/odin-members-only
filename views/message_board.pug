@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1 hey #{currentUser.username}
+  a(href="/log-out") 
+  div(class='col-sm-8')
+  if currentUser.membership===true
+    ul 
+      each message in messages 
+        li #{message.title}
+          p #{message.text}   #{message.user.username}
+  else
+    ul  
+      each message in messages 
+        li #{message.title}
+          p #{message.text}
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='title') Title:
+      input#title.form-control(type='text',  name='title' required='true')
+    div.form-group
+      label(for='text') Message:
+      textarea#text.form-control(type='textarea', name='text' required='true')
+    div.form-group
+      input#userid.form-control(type='hidden',name='userid', required='true', value=currentUser._id )           
+    button.btn.btn-primary(type='submit') Submit      
