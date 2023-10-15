@@ -3,6 +3,7 @@ var router = express.Router();
 const User = require('../models/user');
 const Message = require('../models/message');
 const passport = require('passport');
+const flash = require('connect-flash');
 const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler');
@@ -134,7 +135,7 @@ router.get(
     }
     // find all messages to display on message board
     const allMessages = await Message.find({})
-      .sort({ timestamp: -1 })
+      .sort({ timestamp: 1 })
       .populate('user')
       .exec();
     res.render('message_board', { messages: allMessages });

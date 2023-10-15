@@ -2,6 +2,8 @@ extends layout
 
 block content
   h1 Login
+  if message 
+    p #{message}
 
   form(method='POST' action='')
     div.form-group
